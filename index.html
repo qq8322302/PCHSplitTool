@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>PCH 拆分修改工具 - 下载</title>
+<style>
+  :root {
+    --bg: #f2f3f5;
+    --panel: #ffffff;
+    --border: #d4d7dd;
+    --text: #1a1c20;
+    --muted: #60646c;
+    --brand: #c03333;
+    --brand-dark: #a02a2a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.7 "Microsoft YaHei UI", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px 16px;
+  }
+  .card {
+    width: 100%;
+    max-width: 760px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(17, 20, 26, .06);
+    overflow: hidden;
+  }
+  header {
+    padding: 26px 32px 22px;
+    border-bottom: 1px solid #eceef1;
+  }
+  h1 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: .5px;
+  }
+  .sub {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  main { padding: 26px 32px 30px; }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .label { color: var(--muted); font-size: 13px; min-width: 72px; }
+  .version {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--brand);
+    letter-spacing: .5px;
+  }
+  .badge {
+    display: inline-block;
+    padding: 1px 8px;
+    border-radius: 10px;
+    background: #fdecec;
+    color: var(--brand);
+    font-size: 12px;
+    line-height: 20px;
+  }
+  .download {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 26px;
+    border-radius: 8px;
+    background: var(--brand);
+    color: #fff;
+    font-size: 16px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background .15s ease;
+  }
+  .download:hover { background: var(--brand-dark); }
+  .download:active { transform: translateY(1px); }
+  .url {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    word-break: break-all;
+  }
+  .url a { color: var(--muted); }
+  h2 {
+    margin: 28px 0 10px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  ul.notes {
+    margin: 0;
+    padding-left: 20px;
+  }
+  ul.notes li { margin: 4px 0; }
+  .notes-empty { color: var(--muted); font-size: 13px; }
+  .error {
+    padding: 14px 16px;
+    border: 1px solid #f0c9c9;
+    border-radius: 8px;
+    background: #fdf3f3;
+    color: #8a2b2b;
+    font-size: 14px;
+  }
+  .error code {
+    background: #fff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-family: Consolas, monospace;
+  }
+  footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px;
+    border-top: 1px solid #eceef1;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  button.refresh {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  button.refresh:hover { background: #f7f8fa; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<div class="card">
+  <header>
+    <h1>PCH 拆分修改工具</h1>
+    <div class="sub">淘宝店铺：虎际科技 · 官方下载页</div>
+  </header>
+
+  <main>
+    <!-- 版本信息 (从 update/info.txt 读取, 失败也不影响下面的下载) -->
+    <div class="row">
+      <span class="label">最新版本</span>
+      <span id="version" class="version">读取中…</span>
+      <span id="latestBadge" class="badge hidden">最新</span>
+    </div>
+
+    <div id="infoError" class="error hidden">
+      读取版本信息失败：<span id="failedReason">未知原因</span><br>
+      下载不受影响，可直接点击下面的按钮。若需确认版本，请查看
+      <a id="rawLink" href="update/info.txt" target="_blank" rel="noopener">update/info.txt</a>。
+    </div>
+
+    <!-- 下载地址固定指向同目录下的 update/PCHSplitTool.exe -->
+    <div class="row">
+      <span class="label">下载地址</span>
+      <span>
+        <a id="download" class="download" href="update/PCHSplitTool.exe"
+           download="PCHSplitTool.exe" rel="noopener">下载 PCHSplitTool.exe</a>
+        <div class="url">直链：<a id="downloadUrl" href="update/PCHSplitTool.exe"
+                               target="_blank" rel="noopener"></a></div>
+      </span>
+    </div>
+
+    <h2>更新说明</h2>
+    <ul id="notes" class="notes"></ul>
+    <div id="notesEmpty" class="notes-empty">读取中…</div>
+  </main>
+
+  <footer>
+    <span id="checked">—</span>
+    <button id="refresh" class="refresh" type="button">刷新</button>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // 下载地址不读配置: 固定用页面同目录下的 update/PCHSplitTool.exe
+  var EXE_PATH = 'update/PCHSplitTool.exe';
+  // 版本号 / 更新说明仍然读 update/info.txt (每行 key=value, # 或 ; 开头是注释, note 可多条)
+  var INFO_PATH = 'update/info.txt';
+
+  function el(id) { return document.getElementById(id); }
+
+  function show(id, visible) {
+    el(id).classList.toggle('hidden', !visible);
+  }
+
+  // 把 "note=xx\nyy" 里的字面 \n 拆成多行
+  function splitNote(text) {
+    return text.split(/\\n/).map(function (s) { return s.trim(); })
+               .filter(function (s) { return s.length > 0; });
+  }
+
+  function parseInfo(text) {
+    var info = { version: '', notes: [] };
+    // 去掉 BOM
+    text = text.replace(/^\uFEFF/, '');
+    text.split(/\r?\n/).forEach(function (line) {
+      line = line.trim();
+      if (!line || line.charAt(0) === '#' || line.charAt(0) === ';' || line.charAt(0) === '[') return;
+      var pos = line.indexOf('=');
+      if (pos <= 0) return;
+      var key = line.slice(0, pos).trim().toLowerCase();
+      var value = line.slice(pos + 1).trim();
+      if (!value) return;
+      if (key === 'version') info.version = value;
+      else if (key === 'note' || key === 'notes') {
+        info.notes = info.notes.concat(splitNote(value));
+      }
+      // url= 一律忽略: 下载地址固定是 EXE_PATH
+    });
+    return info;
+  }
+
+  function renderNotes(notes) {
+    var list = el('notes');
+    list.innerHTML = '';
+    notes.forEach(function (note) {
+      var li = document.createElement('li');
+      li.textContent = note;
+      list.appendChild(li);
+    });
+    show('notes', notes.length > 0);
+    show('notesEmpty', notes.length === 0);
+    if (notes.length === 0) {
+      el('notesEmpty').textContent = '本次更新暂无说明。';
+    }
+  }
+
+  function renderVersion(version) {
+    el('version').textContent = version || '未知';
+    show('latestBadge', !!version);
+  }
+
+  function fail(reason) {
+    el('failedReason').textContent = reason;
+    el('rawLink').href = INFO_PATH;
+    renderVersion('');
+    renderNotes([]);
+    show('infoError', true);
+    el('checked').textContent = '版本信息获取失败：' + new Date().toLocaleString('zh-CN');
+  }
+
+  function load() {
+    show('infoError', false);
+
+    // 加时间戳避免浏览器/代理缓存到旧版本
+    var url = INFO_PATH + (INFO_PATH.indexOf('?') >= 0 ? '&' : '?') + '_=' + Date.now();
+
+    fetch(url, { cache: 'no-store', headers: { 'Accept': 'text/plain' } })
+      .then(function (resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        return resp.text();
+      })
+      .then(function (text) {
+        var info = parseInfo(text);
+        renderVersion(info.version);
+        renderNotes(info.notes);
+        show('infoError', false);
+        el('checked').textContent = '更新时间：' + new Date().toLocaleString('zh-CN');
+      })
+      .catch(function (err) {
+        fail(err && err.message ? err.message : String(err));
+      });
+  }
+
+  // 直链显示成完整地址, 方便复制
+  var absolute = new URL(EXE_PATH, window.location.href).href;
+  el('download').setAttribute('href', EXE_PATH);
+  el('downloadUrl').setAttribute('href', EXE_PATH);
+  el('downloadUrl').textContent = absolute;
+
+  el('refresh').addEventListener('click', load);
+  load();
+})();
+</script>
+</body>
+</html>
