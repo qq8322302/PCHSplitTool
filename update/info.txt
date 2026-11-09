@@ -1,0 +1,4 @@
+version=20261109155920
+url=https://pchsplittool.onrender.com/update/PCHSplitTool.exe
+note=1. 新增 XXX 机型支持
+note=2. 修复 YYY 问题
